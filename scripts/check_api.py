@@ -1,7 +1,7 @@
 import json
 import sys
 import time
-from urllib.error import HTTPError, URLError
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 BASE_URL = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8000"
@@ -20,9 +20,10 @@ def call(path, body=None):
 def main():
     for _ in range(30):
         try:
-            if call("/health") == (200, b'{"status":"ok"}'):
+            status, body = call("/health")
+            if status == 200 and json.loads(body) == {"status": "ok"}:
                 break
-        except URLError:
+        except OSError:
             pass
         time.sleep(1)
     else:
