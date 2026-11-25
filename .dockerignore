@@ -1,0 +1,8 @@
+*
+!app/
+app/*
+!app/main.py
+!model/
+model/*
+!model/taxi_model.pkl
+!requirements.txt

@@ -1,0 +1,27 @@
+name: Docker API check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Build image
+        run: docker build -t taxi-api .
+      - name: Start container
+        run: docker run -d --name taxi-api -p 127.0.0.1:8000:8000 taxi-api
+      - name: Check API
+        run: python3 scripts/check_api.py
+      - name: Show container logs
+        if: failure()
+        run: docker logs taxi-api
